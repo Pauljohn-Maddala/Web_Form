@@ -1,27 +1,49 @@
 #!/bin/sh
 
-# Check the installation path and permissions for Newman
-if [ -d "/usr/local/lib/node_modules/newman" ]; then
-    sudo rm -rf /usr/local/lib/node_modules/newman
+# Install Python dependencies
+pip3 install Flask pytest
+
+# Check if nvm is installed, if not, install it
+if ! command -v nvm &> /dev/null; then
+    # Install nvm (Node Version Manager)
+    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
 fi
 
-# Install Newman
-npm update -g newman
-
-# Check the installation path and permissions for Newman
-if [ -d "/usr/local/lib/node_modules/newman" ]; then
-    sudo rm -rf /usr/local/lib/node_modules/newman
-fi
-
-# Assuming nvm is installed, use it to install and use Node.js v16
-export NVM_DIR="$HOME/.nvm"
+# Source nvm in current shell
+export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+
+# Check if nvm is sourced successfully
+if [ -z "$NVM_DIR" ]; then
+    echo "Error: nvm not sourced correctly"
+    exit 1
+fi
+
+# Install the required Node.js version
 nvm install 16
+
+# Check if Node.js is installed successfully
+if ! command -v node &> /dev/null; then
+    echo "Error: Node.js not installed correctly"
+    exit 1
+fi
+
+# Use the installed Node.js version
 nvm use 16
 
+# Install Newman
+npm install -g newman
 
+# Check if Newman is installed successfully
+if ! command -v newman &> /dev/null; then
+    echo "Error: Newman not installed correctly"
+    exit 1
+fi
 
+# Display the Node.js version being used
+node -v
 
+# Display the Newman version
+newman -v
 
-# Display Node.js version
-echo "Using Node.js version: $(node -v)"
+# Continue with the rest of your setup and tests
