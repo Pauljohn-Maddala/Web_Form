@@ -15,7 +15,11 @@ set -e
 
 # Start the Flask server in the background
 flask run &
-PID=$!  # Record the PID of the Flask server
+#PID=$!  # Record the PID of the Flask server
+
+python3 app.py &
+APP_PID=$!
+python3 test.py
 
 # Allow some time for the server to start
 sleep 5
@@ -28,7 +32,7 @@ echo "Running Newman tests for post read and delete..."
 newman run forum_post_read_delete.postman_collection.json -n 50
 
 # Kill the Flask server process
-kill $PID
+kill $APP_PID
 
 echo "Tests completed."
 
