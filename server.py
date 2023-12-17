@@ -13,8 +13,7 @@ ip_restrict_list = {}
 unique_post_id = 0
 member_manager = MemberManager()
 sync_lock = threading.Lock()
-master_key = "admin_key"  
-
+master_key = "master_key"
 
 def is_ip_restricted_or_blocked(ip):
     if ip in ip_restrict_list:
@@ -48,7 +47,7 @@ def register_member():
         abort(400, description="Member name required")
 
     new_member = member_manager.register_member(member_name, full_name)
-    return jsonify(member_id=new_member['member_id'], member_key=new_member.access_key, member_name=new_member['nickname'])
+    return jsonify(member_id=new_member.member_id, member_key=new_member.access_key, member_name=new_member.nickname)
 
 @forum_app.route('/member/<int:member_id>', methods=['GET'])
 def get_member_info(member_id):
@@ -56,7 +55,7 @@ def get_member_info(member_id):
     if not member:
         abort(404, description="Member not found")
 
-    return jsonify(member_id=member['member_id'], member_name=member['nickname'], full_name=member['full_name'])
+    return jsonify(member_id=member.member_id, member_name=member.nickname, full_name=member.full_name)
 
 @forum_app.route('/member/<int:member_id>/edit', methods=['PUT'])
 def update_member_info(member_id):
@@ -69,9 +68,9 @@ def update_member_info(member_id):
 
     member = member_manager.get_member_info(member_id)
     if updated_full_name:
-        member['full_name'] = updated_full_name
+        member.full_name = updated_full_name
 
-    return jsonify(member_id=member['member_id'], member_name=member['nickname'], full_name=member['full_name'])
+    return jsonify(member_id=member.member_id, member_name=member.nickname, full_name=member.full_name)
 
 @forum_app.route('/discussions', methods=['GET'])
 def filter_posts_by_date():
@@ -143,7 +142,7 @@ def view_post(post_id):
             if member_id:
                 member = member_manager.get_member(member_id)
                 if member:
-                    member_info = {'member_id': member['member_id'], 'member_name': member['nickname']}
+                    member_info = {'member_id': member.member_id, 'member_name': member.nickname}
             return jsonify(id=discussion['id'], timestamp=discussion['timestamp'], message=discussion['message'], member=member_info)
         else:
             abort(404, description="Discussion not found")
@@ -158,7 +157,7 @@ def remove_post(post_id, key):
         if any(member.mod_access_key == key and member.moderator_status for member in member_manager.members.values()):
             del discussion_posts[post_id]
             return jsonify(status="Discussion removed by moderator")
-        if discussion['key'] == key or (discussion.get('member_id') and member_manager.validate_member(discussion['member_id'], key)):
+        if discussion['key'] == key or (discussion.get('member_id') and member_manager.validate_member(discussion.member_id, key)):
             del discussion_posts[post_id]
             return jsonify(id=post_id, key=key, timestamp=discussion['timestamp'])
         else:
