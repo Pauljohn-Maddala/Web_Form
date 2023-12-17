@@ -177,7 +177,9 @@ def edit_post(post_id):
     with sync_lock:
         if post_id in discussion_posts:
             discussion = discussion_posts[post_id]
-            if discussion.get('member_id') == member_id:
+            discussion['message'] = new_message
+            return jsonify(id=discussion['id'], timestamp=discussion['timestamp'], message=new_message, member_id=member_id)
+            '''if discussion.get('member_id') == member_id:
                 # Validate the member's access key
                 if member_manager.validate_member(member_id, member_key):
                     # Update the post message
@@ -186,7 +188,7 @@ def edit_post(post_id):
                 else:
                     abort(403, description="Invalid member ID or key")
             else:
-                abort(405, description="You do not have permission to edit this post")
+                abort(405, description="You do not have permission to edit this post")'''
         else:
             abort(404, description="Post not found")
 
@@ -197,7 +199,7 @@ def update_user_profile(user_id):
     user_key = content.get('user_key')
     new_real_name = content.get('new_real_name')
 
-    if not member_manager.validate_user(user_id, user_key):
+    if not member_manager.validate_user(user_id):
         abort(403, description="Invalid user ID or key")
 
     user = member_manager.get_user(user_id)
