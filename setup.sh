@@ -1,6 +1,6 @@
 #!/bin/sh
 
-pip3 install Flask flask-sqlalchemy flask-login flask-limiter marshmallow werkzeug
+'pip3 install Flask flask-sqlalchemy flask-login flask-limiter marshmallow werkzeug
 
 # Install or update NVM
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
@@ -17,3 +17,19 @@ nvm use 16
 
 # Install Newman
 npm install -g newman
+'
+
+
+# Install OpenSSL
+pip3 install pyopenssl
+
+
+# Install datetime
+pip3 install datetime
+
+# Install secrets
+pip3 install secrets
+
+
+# Update pip and setup tools
+pip3 install --upgrade pip setuptools
