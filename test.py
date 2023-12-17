@@ -1,7 +1,7 @@
 
 import unittest
 import json
-from web_forum_app import web_forum_app
+from server import forum_app
 from user_management import UserHandler, ForumUser
 
 class TestUserHandler(unittest.TestCase):
