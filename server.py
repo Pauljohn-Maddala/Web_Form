@@ -205,7 +205,7 @@ def update_user_profile(user_id):
     user = member_manager.get_member_info(user_id)
     if user:
         user.real_name = new_real_name
-        return jsonify(user_id=user.user_id, username=user.username, real_name=user.real_name)
+        return jsonify(user_id=user.member_id, username=user.nickname, real_name=user.full_name)
     else:
         abort(404, description="User not found")
 
