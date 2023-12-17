@@ -76,23 +76,20 @@ def update_member_info(member_id):
     return jsonify(member_id=member.member_id, member_name=member.nickname, full_name=member.full_name)
 
 @forum_app.route('/discussions', methods=['GET'])
-def filter_posts_by_date():
-    start_date = request.args.get('start')
-    end_date = request.args.get('end')
+def filter_posts_by_year():
+    year = request.args.get('year')
 
     try:
-        if start_date:
-            start_date = dt.fromisoformat(start_date)
-        if end_date:
-            end_date = dt.fromisoformat(end_date)
+        if year:
+            year = int(year)
     except ValueError:
-        abort(400, description="Invalid date format. Use ISO 8601 format.")
+        abort(400, description="Invalid year format. Use a valid year (e.g., 2023).")
 
     selected_posts = []
     with sync_lock:
         for post in discussion_posts.values():
-            post_date = dt.fromisoformat(post['timestamp'])
-            if (not start_date or post_date >= start_date) and (not end_date or post_date <= end_date):
+            post_year = dt.fromisoformat(post['timestamp']).year
+            if not year or post_year == year:
                 selected_posts.append(post)
 
     return jsonify(selected_posts)
