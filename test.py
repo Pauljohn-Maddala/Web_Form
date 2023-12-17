@@ -36,7 +36,7 @@ class TestFlaskApi(unittest.TestCase):
     def setUp(self):
         forum_app.testing = True  # Use the forum_app from server.py
         self.app = forum_app.test_client()
-        self.user_manager = UserManager()
+        self.member_manager = MemberManager()
 
     def test_create_user_endpoint(self):
         # Test the create user endpoint
