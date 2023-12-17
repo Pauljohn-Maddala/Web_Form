@@ -6,7 +6,7 @@ app = Flask(__name__)
 
 posts = {}
 next_id = 1
-users = {}
+users = {}  # Dictionary to store user information (user_id and user_key)
 next_user_id = 1  # Initialize next_user_id
 
 @app.route('/user', methods=['POST'])
@@ -37,7 +37,7 @@ def create_post():
     key = secrets.token_urlsafe(16)
     timestamp = datetime.utcnow().isoformat() + "Z"
     posts[next_id] = {'msg': data['msg'], 'key': key, 'timestamp': timestamp, 'user_id': user_id}
-
+    
     response = {'id': next_id, 'key': key, 'timestamp': timestamp, 'user_id': user_id}
     next_id += 1
     return jsonify(response)
