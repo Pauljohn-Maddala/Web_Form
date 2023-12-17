@@ -24,8 +24,13 @@ class MemberManager:
         return new_member
 
     def register_member(self, nickname, full_name):
-        for member in self.members.values():
-            if member.nickname == nickname:
+        
+        original_nickname = nickname
+        nickname_suffix = 1
+        while any(member.nickname == nickname for member in self.members.values()):
+            nickname = f"{original_nickname}_{nickname_suffix}"
+            nickname_suffix += 1
+
                 raise ValueError("Nickname already in use")
 
         self.id_counter += 1
