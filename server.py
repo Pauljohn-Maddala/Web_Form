@@ -4,20 +4,30 @@ from datetime import datetime
 
 app = Flask(__name__)
 
+# Initialize posts as an empty dictionary
 posts = {}
 next_id = 1
+data_file = "posts.json"  # File to store posts
 
+# Function to save posts to the file
 def save_posts():
-    with open('posts.json', 'w') as file:
-        json.dump(posts, file)
-
-def load_posts():
-    global posts
     try:
-        with open('posts.json', 'r') as file:
-            posts = json.load(file)
-    except FileNotFoundError:
-        posts = {}
+        with open(data_file, "w") as file:
+            json.dump(posts, file)
+    except Exception as e:
+        print(f"Error saving posts: {str(e)}")
+
+# Function to load posts from the file
+def load_posts():
+    try:
+        with open(data_file, "r") as file:
+            return json.load(file)
+    except (FileNotFoundError, json.JSONDecodeError) as e:
+        print(f"Error loading posts: {str(e)}")
+        return {}
+
+# Load posts from the file on server startup
+posts = load_posts()
 
 @app.route('/post', methods=['POST'])
 def create_post():
@@ -35,15 +45,17 @@ def create_post():
     if user_id and user_key:
         if user_id not in users or users[user_id].user_key != user_key:
             return jsonify({'error': 'Invalid user ID or key'}), 403
-        posts[next_id]['user_id'] = user_id
-    
+
     key = secrets.token_urlsafe(16)
     timestamp = datetime.utcnow().isoformat() + "Z"
     posts[next_id] = {'msg': data['msg'], 'key': key, 'timestamp': timestamp}
     
     response = {'id': next_id, 'key': key, 'timestamp': timestamp}
     next_id += 1
+
+    # Save posts to the file after creating a new post
     save_posts()
+    
     return jsonify(response)
 
 
@@ -97,5 +109,4 @@ def get_posts_by_user(user_id):
 
 
 if __name__ == '__main__':
-    load_posts()
     app.run(debug=True)
