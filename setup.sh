@@ -1,5 +1,7 @@
 #!/bin/sh
 
+pip3 install flask flask-sqlalchemy flask-login flask-limiter marshmallow
+
 # Install or update NVM
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
 
