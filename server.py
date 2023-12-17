@@ -186,7 +186,7 @@ def edit_post(post_id):
                 else:
                     abort(403, description="Invalid member ID or key")
             else:
-                abort(403, description="You do not have permission to edit this post")
+                abort(405, description="You do not have permission to edit this post")
         else:
             abort(404, description="Post not found")
 
