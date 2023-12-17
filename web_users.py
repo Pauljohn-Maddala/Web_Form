@@ -46,7 +46,7 @@ class MemberManager:
     def get_member_info(self, member_id):
         if member_id in self.members:
             member = self.members[member_id]
-            return {'nickname': member.nickname, 'full_name': member.full_name}
+            return {'member_id': member.member_id, 'nickname': member.nickname, 'full_name': member.full_name}
         return None
 
     def validate_user(self, user_id, user_key):
