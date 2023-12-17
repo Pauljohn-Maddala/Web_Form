@@ -1,3 +1,9 @@
+
+# Placeholder for creating a new member and capturing valid_member_id and correct_user_key
+# This should be replaced with actual logic to create a member and capture their ID and key
+new_member = member_manager.register_member("new_user", "New User")
+valid_member_id = new_member.member_id
+correct_user_key = new_member.access_key
 import unittest
 import json
 from server import forum_app  # Import the Flask app from server.py
@@ -87,7 +93,7 @@ class TestFlaskApi(unittest.TestCase):
         key = create_response.json['key']
 
         # Edit the post
-        edit_data = {'member_id': valid_member_id, 'member_key': key, 'new_message': 'Edited Test Post'}
+        edit_data = {'member_id': None, 'member_key': key, 'new_message': 'Edited Test Post'}
         edit_url = f'/discussion/{post_id}/edit'
         response = self.app.put(edit_url, json=edit_data)
         self.assertEqual(response.status_code, 200)
@@ -110,7 +116,7 @@ class TestFlaskApi(unittest.TestCase):
 
     def test_update_user_profile_endpoint(self):
         # Test updating user profile
-        update_data = {'user_key': correct_user_key, 'new_real_name': 'Updated User'}
+        update_data = {'user_key': 'user_key', 'new_real_name': 'Updated User'}
         response = self.app.put(f'/user/{1}/update', json=update_data)  # Assuming a user with ID 1 exists
         self.assertEqual(response.status_code, 200)
 
