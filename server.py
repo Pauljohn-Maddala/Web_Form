@@ -40,6 +40,11 @@ class PostSchema(Schema):
 
 post_schema = PostSchema()
 
+# Initialize database
+def initialize_database():
+    with app.app_context():
+        db.create_all()
+
 @app.before_first_request
 def create_tables():
     db.create_all()
@@ -92,4 +97,5 @@ def delete_post(post_id, key):
     return jsonify({'id': post_id, 'key': key, 'timestamp': post.timestamp})
 
 if __name__ == '__main__':
+    initialize_database()
     app.run(debug=True)
