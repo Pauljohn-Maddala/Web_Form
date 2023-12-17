@@ -4,49 +4,33 @@ import uuid
 
 app = Flask(__name__)
 
-# Dictionary to store posts and users
-posts = {}
-users = {}
 
-# Function to generate a current timestamp
-def current_timestamp():
-    return datetime.now().isoformat()
+posts = {}
 
 @app.route('/post', methods=['POST'])
 def create_post():
     data = request.get_json()
+    user_key = data.get('user_key')
 
-    # Validate request data
-    if 'msg' not in data:
-        return jsonify({"error": "'msg' field is required"}), 400
-    if 'user_id' not in data or 'user_key' not in data:
-        return jsonify({"error": "'user_id' and 'user_key' fields are required"}), 400
-
-    user_id = data['user_id']
-    user_key = data['user_key']
-
-    # User authentication
-    if user_id not in users or users[user_id] != user_key:
+    # User authentication (update as per your actual authentication logic)
+    if user_key != AUTH_KEY:
         return jsonify({"error": "Unauthorized"}), 403
 
     post_id = str(uuid.uuid4())
     post = {
         'id': post_id,
-        'user_id': user_id,
-        'msg': data['msg'],
-        'timestamp': current_timestamp(),
+        'msg': data.get('msg', ''),
+        'timestamp': datetime.now().isoformat(),
     }
     posts[post_id] = post
     return jsonify(post), 200
 
 @app.route('/post/<string:id>', methods=['GET'])
 def read_post(id):
-    if id not in posts:
+    post = posts.get(id)
+    if not post:
         return jsonify({"error": "Post not found"}), 404
-
-    post = posts[id]
     return jsonify(post), 200
-
 @app.route('/post/<string:id>/delete/<string:key>', methods=['DELETE'])
 def delete_post(id, key):
     if id not in posts:
