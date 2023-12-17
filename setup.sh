@@ -1,29 +1,21 @@
 #!/bin/sh
 
-# Install nvm (Node Version Manager)
+# Install nvm and load it
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
-
-# Load nvm
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
 
-# Install the latest version of Node.js
+# Install and use the latest Node.js version
 nvm install node
-
-# Use the installed Node.js version
 nvm use node
+nvm alias default node
 
-# Update PATH to use the installed Node.js version
+# Ensure the PATH is correctly set for the new Node.js version
 export PATH="$NVM_DIR/versions/node/$(node -v)/bin:$PATH"
-
-# Display the Node.js version
-echo "Using Node.js version: $(node -v)"
-
-# Install Newman
-npm install -g newman
 
 # Install or upgrade Newman
 npm install -g newman
 
-
+# Display the Node.js version
 echo "Using Node.js version: $(node -v)"
