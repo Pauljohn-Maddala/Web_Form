@@ -51,7 +51,10 @@ def register_member():
 
 @forum_app.route('/member/<int:member_id>', methods=['GET'])
 def get_member_info(member_id):
-    member = member_manager.get_member_info(member_id)
+    member_info = member_manager.get_member_info(member_id)
+    if not member_info:
+        abort(404, description='Member not found')
+    member = member_info
     if not member:
         abort(404, description="Member not found")
 
@@ -66,7 +69,10 @@ def update_member_info(member_id):
     if not member_manager.validate_member(member_id, member_access_key):
         abort(403, description="Invalid member ID or key")
 
-    member = member_manager.get_member_info(member_id)
+    member_info = member_manager.get_member_info(member_id)
+    if not member_info:
+        abort(404, description='Member not found')
+    member = member_info
     if updated_full_name:
         member.full_name = updated_full_name
 
