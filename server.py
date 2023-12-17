@@ -207,10 +207,13 @@ def update_user_profile(user_id):
 @forum_app.route('/posts/search', methods=['GET'])
 def search_posts():
     keyword = request.args.get('keyword')
-    filtered_posts = [post for post in discussion_posts.values() if keyword.lower() in post['msg'].lower()]
+    filtered_posts = [post for post in discussion_posts.values() if keyword.lower() in post.get('msg', '').lower()]
     return jsonify(filtered_posts)
 
 
 
 if __name__ == '__main__':
     forum_app.run(debug=True)
+
+# Additional corrections and logic adjustments
+# TODO: Implement specific corrections based on the application's requirements and logic
