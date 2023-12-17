@@ -62,6 +62,19 @@ def delete_post(post_id, key):
     del posts[post_id]
     return jsonify({'message': 'Post deleted'})
 
+@app.route('/posts/range', methods=['GET'])
+def get_posts_in_range():
+    start = request.args.get('start')
+    end = request.args.get('end')
+    
+    start_dt = datetime.fromisoformat(start) if start else None
+    end_dt = datetime.fromisoformat(end) if end else None
+
+    filtered_posts = {id: post for id, post in posts.items() if 
+                      (not start_dt or datetime.fromisoformat(post['timestamp']) >= start_dt) and
+                      (not end_dt or datetime.fromisoformat(post['timestamp']) <= end_dt)}
+
+    return jsonify(filtered_posts)
 
 if __name__ == '__main__':
     app.run(debug=True)
