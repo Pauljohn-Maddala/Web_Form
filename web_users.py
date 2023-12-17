@@ -31,7 +31,7 @@ class MemberManager:
             nickname = f"{original_nickname}_{nickname_suffix}"
             nickname_suffix += 1
 
-                raise ValueError("Nickname already in use")
+        raise ValueError("Nickname already in use")
 
         self.id_counter += 1
         member_access_key = os.urandom(24).hex()
