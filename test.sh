@@ -17,7 +17,7 @@ set -e
 flask run &
 #PID=$!  # Record the PID of the Flask server
 
-python3 app.py &
+python3 server.py &
 APP_PID=$!
 python3 test.py
 
