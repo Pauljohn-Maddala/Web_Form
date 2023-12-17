@@ -1,8 +1,6 @@
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user
-from flask_limiter import Limiter
-from flask_limiter.util import get_remote_address
 from marshmallow import Schema, fields, validate
 import logging
 import secrets
@@ -18,7 +16,6 @@ app.config['SECRET_KEY'] = 'your-secret-key'
 db = SQLAlchemy(app)
 login_manager = LoginManager()
 login_manager.init_app(app)
-limiter = Limiter(app, key_func=get_remote_address)
 logging.basicConfig(filename='server.log', level=logging.DEBUG)
 
 # User Model
@@ -49,7 +46,6 @@ def create_tables():
 
 # Routes
 @app.route('/post', methods=['POST'])
-@limiter.limit("10 per minute")
 def create_post():
     logging.info('Post request received')
     if not request.is_json:
