@@ -50,7 +50,7 @@ class MemberManager:
             #return {'member_id': member.member_id, 'nickname': member.nickname, 'full_name': member.full_name}
         return None
 
-    def validate_user(self, user_id, user_key):
+    def validate_user(self, user_id):
         # Placeholder implementation
         member = self.members.get(user_id)
         #return member and member.access_key == user_key
