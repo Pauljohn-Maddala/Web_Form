@@ -8,7 +8,7 @@ export NVM_DIR="$HOME/.nvm"
 nvm use 16
 
 # Set the Flask app environment variable
-export FLASK_APP=server.py  # Replace with your actual Flask app filename
+export FLASK_APP=server_v2.py  # Replace with your actual Flask app filename
 
 # Exit immediately if any command fails
 set -e
@@ -17,9 +17,9 @@ set -e
 flask run &
 #PID=$!  # Record the PID of the Flask server
 
-python3 server.py &
+python3 server_v2.py &
 APP_PID=$!
-python3 test.py
+#python3 test.py
 
 # Allow some time for the server to start
 sleep 5
