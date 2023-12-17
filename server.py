@@ -6,6 +6,16 @@ app = Flask(__name__)
 
 posts = {}
 next_id = 1
+users = {}  # Dictionary to store user information (user_id and user_key)
+
+@app.route('/user', methods=['POST'])
+def create_user():
+    global next_user_id
+    user_id = str(next_user_id)
+    user_key = secrets.token_urlsafe(16)
+    users[user_id] = {'user_key': user_key}
+    next_user_id += 1
+    return jsonify({'user_id': user_id, 'user_key': user_key})
 
 @app.route('/post', methods=['POST'])
 def create_post():
@@ -14,24 +24,23 @@ def create_post():
         return "Invalid format, JSON required", 400
 
     data = request.get_json()
-    if 'msg' not in data or not isinstance(data['msg'], str):
-        return "Bad request: 'msg' field missing or not a string", 400
+    if 'msg' not in data or not isinstance(data['msg'], str) or 'user_id' not in data or 'user_key' not in data:
+        return "Bad request: 'msg', 'user_id', and 'user_key' fields are required", 400
 
-    user_id = data.get('user_id')
-    user_key = data.get('user_key')
+    user_id = data['user_id']
+    user_key = data['user_key']
 
-    if user_id and user_key:
-        if user_id not in users or users[user_id].user_key != user_key:
-            return jsonify({'error': 'Invalid user ID or key'}), 403
-        posts[next_id]['user_id'] = user_id
-    
+    if user_id not in users or users[user_id]['user_key'] != user_key:
+        return jsonify({'error': 'Invalid user ID or key'}), 403
+
     key = secrets.token_urlsafe(16)
     timestamp = datetime.utcnow().isoformat() + "Z"
-    posts[next_id] = {'msg': data['msg'], 'key': key, 'timestamp': timestamp}
+    posts[next_id] = {'msg': data['msg'], 'key': key, 'timestamp': timestamp, 'user_id': user_id}
     
-    response = {'id': next_id, 'key': key, 'timestamp': timestamp}
+    response = {'id': next_id, 'key': key, 'timestamp': timestamp, 'user_id': user_id}
     next_id += 1
     return jsonify(response)
+
 
 
 
