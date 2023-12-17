@@ -1,9 +1,5 @@
 
-# Placeholder for creating a new member and capturing valid_member_id and correct_user_key
-# This should be replaced with actual logic to create a member and capture their ID and key
-new_member = member_manager.register_member("new_user", "New User")
-valid_member_id = new_member.member_id
-correct_user_key = new_member.access_key
+
 import unittest
 import json
 from server import forum_app  # Import the Flask app from server.py
@@ -13,6 +9,7 @@ class TestMemberManager(unittest.TestCase):
     def setUp(self):
         self.app = forum_app.test_client()  # Create a test client for the Flask app
         self.member_manager = MemberManager()
+        
 
     def test_user_creation(self):
         # Test user creation
