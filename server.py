@@ -53,7 +53,7 @@ def register_member():
 def get_member_info(member_id):
     member = member_manager.get_member_info(member_id)
     if member:
-        return {'member_id': member.member_id, 'member_name': member.nickname, 'full_name': member.full_name}
+        return {'member_name': member.nickname, 'full_name': member.full_name}
     else:
         return jsonify(message='Member not found'), 404
 
