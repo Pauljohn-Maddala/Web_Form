@@ -5,10 +5,6 @@ import threading
 import re
 app = Flask(__name__)
 
-# Name: Gouranga Khande
-# CWID: 20008981
-# email-id: vkhande4@stevens.edu
-
 lock = threading.Lock()
 users = {}
 user_id = 0
