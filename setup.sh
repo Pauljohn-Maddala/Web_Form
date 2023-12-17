@@ -18,8 +18,8 @@ if [ -z "$NVM_DIR" ]; then
     exit 1
 fi
 
-# Install the required Node.js version
-nvm install 16
+# Install the latest LTS version of Node.js
+nvm install --lts
 
 # Check if Node.js is installed successfully
 if ! command -v node &> /dev/null; then
@@ -28,7 +28,10 @@ if ! command -v node &> /dev/null; then
 fi
 
 # Use the installed Node.js version
-nvm use 21
+nvm use --lts
+
+# Add Node.js binaries to PATH
+export PATH="$NVM_DIR/versions/node/$(nvm current)/bin:$PATH"
 
 # Install Newman
 npm install -g newman
