@@ -15,10 +15,11 @@ def create_post():
     # Check if 'msg', 'user_id', and 'user_key' fields are present in the request
     if 'msg' not in data or 'user_id' not in data or 'user_key' not in data:
         return jsonify({"error": "'msg', 'user_id', and 'user_key' fields are required"}), 400
-
-    # Check if the user exists
+    
     user_id = data['user_id']
     user_key = data['user_key']
+    
+    # Check if the user exists and the provided user key is correct
     if user_id not in users or users[user_id] != user_key:
         return jsonify({"error": "Unauthorized"}), 403
     
@@ -28,10 +29,9 @@ def create_post():
     # Create the post dictionary
     post = {
         'id': post_id,
-        'user_id': user_id,
         'msg': data['msg'],
         'timestamp': str(uuid.uuid4()),  # For testing purposes, generate a timestamp
-        'key': '',  # Initialize key as an empty string
+        'user_id': user_id,
     }
     
     # Store the post in the dictionary
@@ -48,20 +48,20 @@ def read_post(id):
     # Get the post
     post = posts[id]
     
-    # Include the associated user_id
-    post['user_id'] = users[post['user_id']]
-    
-    # Return the post
-    return jsonify(post), 200
+    # Return the post with the associated user id
+    return jsonify({"id": post['id'], "msg": post['msg'], "timestamp": post['timestamp'], "user_id": post['user_id']}), 200
 
-@app.route('/post/<string:id>/delete/<string:key>', methods=['DELETE'])
-def delete_post(id, key):
+@app.route('/post/<string:id>/delete', methods=['DELETE'])
+def delete_post(id):
     # Check if the post exists
     if id not in posts:
         return jsonify({"error": "Post not found"}), 404
     
-    # Check if the provided key matches the key in the post or user's key
-    if key != posts[id]['key'] and key != users[posts[id]['user_id']]:
+    # Get the user id associated with the post
+    user_id = posts[id]['user_id']
+    
+    # Check if the user exists and the provided user key is correct
+    if user_id not in users or users[user_id] != request.headers.get('Authorization'):
         return jsonify({"error": "Unauthorized"}), 403
     
     # Delete the post
@@ -73,19 +73,21 @@ def delete_post(id, key):
 def create_user():
     # Get data from the request
     data = request.get_json()
-
+    
     # Check if 'user_id' and 'user_key' fields are present in the request
     if 'user_id' not in data or 'user_key' not in data:
         return jsonify({"error": "'user_id' and 'user_key' fields are required"}), 400
-
-    # Check if the user already exists
+    
     user_id = data['user_id']
+    user_key = data['user_key']
+    
+    # Check if the user already exists
     if user_id in users:
         return jsonify({"error": "User already exists"}), 400
-
-    # Create the user
-    users[user_id] = data['user_key']
-
+    
+    # Create the user with the provided user key
+    users[user_id] = user_key
+    
     return jsonify({"message": "User created"}), 200
 
 if __name__ == '__main__':
