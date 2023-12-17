@@ -13,7 +13,8 @@ ip_restrict_list = {}
 unique_post_id = 0
 member_manager = MemberManager()
 sync_lock = threading.Lock()
-master_key = "master_key"
+master_key = "admin_key"  
+
 
 def is_ip_restricted_or_blocked(ip):
     if ip in ip_restrict_list:
