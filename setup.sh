@@ -4,7 +4,7 @@
 pip3 install Flask pytest
 
 # Install nvm (Node Version Manager)
-#curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
 
 npm install -g newman
 
