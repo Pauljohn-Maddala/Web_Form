@@ -1,5 +1,7 @@
-'''#!/bin/sh
+#!/bin/sh
+pip3 install Flask pytest
 
+'''
 # Install Python dependencies
 pip3 install Flask pytest
 
