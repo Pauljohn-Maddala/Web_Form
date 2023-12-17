@@ -163,22 +163,30 @@ def remove_post(post_id, key):
         else:
             abort(403, description="Forbidden: Invalid key")
 
-@forum_app.route('/post/<int:post_id>/edit', methods=['PUT'])
+@forum_app.route('/discussion/<int:post_id>/edit', methods=['PUT'])
 def edit_post(post_id):
     content = request.json
-    user_id = content.get('user_id')
-    user_key = content.get('user_key')
+    member_id = content.get('member_id')
+    member_key = content.get('member_key')
     new_message = content.get('new_message')
 
-    if not member_manager.validate_user(user_id, user_key):
-        abort(403, description="Invalid user ID or key")
-
+    # Check if the member is authorized to edit the post
     with sync_lock:
-        if post_id in discussion_posts and discussion_posts[post_id].get('user_id') == user_id:
-            discussion_posts[post_id]['msg'] = new_message
-            return jsonify(discussion_posts[post_id])
+        if post_id in discussion_posts:
+            discussion = discussion_posts[post_id]
+            if discussion.get('member_id') == member_id:
+                # Validate the member's access key
+                if member_manager.validate_member(member_id, member_key):
+                    # Update the post message
+                    discussion['message'] = new_message
+                    return jsonify(id=discussion['id'], timestamp=discussion['timestamp'], message=new_message, member_id=member_id)
+                else:
+                    abort(403, description="Invalid member ID or key")
+            else:
+                abort(403, description="You do not have permission to edit this post")
         else:
-            abort(404, description="Post not found or user mismatch")
+            abort(404, description="Post not found")
+
 
 @forum_app.route('/user/<int:user_id>/update', methods=['PUT'])
 def update_user_profile(user_id):
