@@ -20,7 +20,7 @@ if [ -z "$NVM_DIR" ]; then
 fi
 
 # Install the required Node.js version
-nvm install 16
+nvm install node
 
 # Check if Node.js is installed successfully
 if ! command -v node &> /dev/null; then
