@@ -4,8 +4,8 @@ from datetime import datetime
 
 app = Flask(__name__)
 
-posts = data.load_posts()  # Load posts from the file
-next_id = max(posts.keys(), default=0) + 1
+posts = {}
+next_id = 1
 
 @app.route('/post', methods=['POST'])
 def create_post():
@@ -23,19 +23,15 @@ def create_post():
     if user_id and user_key:
         if user_id not in users or users[user_id].user_key != user_key:
             return jsonify({'error': 'Invalid user ID or key'}), 403
-
+        posts[next_id]['user_id'] = user_id
+    
     key = secrets.token_urlsafe(16)
     timestamp = datetime.utcnow().isoformat() + "Z"
     posts[next_id] = {'msg': data['msg'], 'key': key, 'timestamp': timestamp}
     
     response = {'id': next_id, 'key': key, 'timestamp': timestamp}
     next_id += 1
-
-    # Save posts to the file after creating a new post
-    data.save_posts(posts)
-    
     return jsonify(response)
-
 
 
 
@@ -64,7 +60,6 @@ def delete_post(post_id, key):
         return "Forbidden: Incorrect key", 403
 
     del posts[post_id]
-    #save_posts()
     return jsonify({'message': 'Post deleted'})
 
 @app.route('/posts/range', methods=['GET'])
