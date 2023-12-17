@@ -1,6 +1,6 @@
 #!/bin/sh
 
-pip3 install Flask==2.1.3 flask-sqlalchemy flask-login flask-limiter marshmallow werkzeug
+pip3 install Flask flask-sqlalchemy flask-login flask-limiter marshmallow werkzeug
 
 # Install or update NVM
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
