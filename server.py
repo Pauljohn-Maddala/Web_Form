@@ -202,7 +202,7 @@ def update_user_profile(user_id):
     if not member_manager.validate_user(user_id):
         abort(403, description="Invalid user ID or key")
 
-    user = member_manager.get_user(user_id)
+    user = member_manager.get_member_info(user_id)
     if user:
         user.real_name = new_real_name
         return jsonify(user_id=user.user_id, username=user.username, real_name=user.real_name)
