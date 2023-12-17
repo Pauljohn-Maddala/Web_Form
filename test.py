@@ -6,10 +6,11 @@ from server import forum_app  # Import the Flask app from server.py
 from web_users import MemberManager, ForumMember  # Import the MemberManager and ForumMember from web_users.py
 
 class TestMemberManager(unittest.TestCase):
+    
+
     def setUp(self):
-        self.app = forum_app.test_client()  # Create a test client for the Flask app
-        self.member_manager = MemberManager()
-        
+            self.app = forum_app.test_client()  # Create a test client for the Flask app
+            self.member_manager = MemberManager()
 
     def test_user_creation(self):
         # Test user creation
