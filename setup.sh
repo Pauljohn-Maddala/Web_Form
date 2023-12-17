@@ -15,3 +15,6 @@ nvm use node
 
 # Install or upgrade Newman
 npm install -g newman
+
+
+echo "Using Node.js version: $(node -v)"
