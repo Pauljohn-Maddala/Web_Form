@@ -1,4 +1,4 @@
-#!/bin/sh
+'''#!/bin/sh
 
 # Install Python dependencies
 pip3 install Flask pytest
@@ -49,3 +49,4 @@ node -v
 newman -v
 
 # Continue with the rest of your setup and tests
+'''
