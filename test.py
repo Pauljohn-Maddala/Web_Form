@@ -2,7 +2,7 @@
 import unittest
 import json
 from server import forum_app
-from user_management import UserHandler, ForumUser
+from web_users import UserHandler, ForumUser
 
 class TestUserHandler(unittest.TestCase):
     def setUp(self):
