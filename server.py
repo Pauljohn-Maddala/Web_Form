@@ -1,0 +1,59 @@
+from flask import Flask, request, jsonify
+import secrets
+from datetime import datetime
+
+app = Flask(__name__)
+
+posts = {}
+next_id = 1
+
+@app.route('/post', methods=['POST'])
+def create_post():
+    global next_id
+    if not request.is_json:
+        return "Invalid format, JSON required", 400
+
+    data = request.get_json()
+    if 'msg' not in data or not isinstance(data['msg'], str):
+        return "Bad request: 'msg' field missing or not a string", 400
+
+    key = secrets.token_urlsafe(16)
+    timestamp = datetime.utcnow().isoformat() + "Z"
+    posts[next_id] = {'msg': data['msg'], 'key': key, 'timestamp': timestamp}
+    
+    response = {'id': next_id, 'key': key, 'timestamp': timestamp}
+    next_id += 1
+    return jsonify(response)
+
+
+
+@app.route('/post/<int:post_id>', methods=['GET'])
+def read_post(post_id):
+    post = posts.get(post_id)
+    if post is None:
+        return "Post not found", 404
+
+    response = {
+        'id': post_id,
+        'timestamp': post['timestamp'],
+        'msg': post['msg']
+    }
+    return jsonify(response)
+
+
+@app.route('/post/<int:post_id>/delete/<key>', methods=['DELETE'])
+def delete_post(post_id, key):
+    post = posts.get(post_id)
+    if post is None:
+        return "Post not found", 404
+
+    if post['key'] != key:
+        return "Forbidden: Incorrect key", 403
+
+    del posts[post_id]
+    return jsonify({'id': post_id, 'key': key, 'timestamp': post['timestamp']})
+
+
+
+if __name__ == '__main__':
+    app.run(debug=True)
