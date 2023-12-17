@@ -6,42 +6,40 @@ from flask_limiter.util import get_remote_address
 from marshmallow import Schema, fields, validate
 import logging
 import secrets
+from datetime import datetime
 
 app = Flask(__name__)
+
+# Configuration
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///posts.db'
 app.config['SECRET_KEY'] = 'your-secret-key'
 
+# Extensions Initialization
 db = SQLAlchemy(app)
 login_manager = LoginManager()
 login_manager.init_app(app)
-#limiter = Limiter(app, key_func=get_remote_address, default_limits=["200 per day", "50 per hour"])
-
-# Ensure that the Limiter is instantiated correctly
-limiter = Limiter(
-    app,
-    key_func=get_remote_address,
-    default_limits=["200 per day", "50 per hour"]
-)
-
+limiter = Limiter(app, key_func=get_remote_address)
 logging.basicConfig(filename='server.log', level=logging.DEBUG)
 
-# User model for authentication
+# User Model
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    # Add additional user fields as necessary
+    # Add additional fields as needed
 
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
 
-# Post model for database
+# Post Model
 class Post(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    content = db.Column(db.String(500), nullable=False)
+    msg = db.Column(db.String(500), nullable=False)
+    key = db.Column(db.String(16), unique=True, nullable=False)
+    timestamp = db.Column(db.String(25), nullable=False)
 
-# Schema for data validation
+# Schema for Validation
 class PostSchema(Schema):
-    content = fields.Str(required=True, validate=validate.Length(max=500))
+    msg = fields.Str(required=True, validate=validate.Length(max=500))
 
 post_schema = PostSchema()
 
@@ -49,34 +47,53 @@ post_schema = PostSchema()
 def create_tables():
     db.create_all()
 
-@app.route('/login', methods=['GET', 'POST'])
-def login():
-    # Implement your login logic here
-    pass
-
-@app.route('/logout')
-@login_required
-def logout():
-    logout_user()
-    return 'Logged out'
-
+# Routes
 @app.route('/post', methods=['POST'])
 @limiter.limit("10 per minute")
 def create_post():
-    app.logger.info('Post request received')
+    logging.info('Post request received')
     if not request.is_json:
         return "Invalid format, JSON required", 400
 
-    data = request.get_json()
-    errors = post_schema.validate(data)
+    errors = post_schema.validate(request.get_json())
     if errors:
         return jsonify(errors), 400
 
-    post = Post(content=data['content'])
-    db.session.add(post)
+    data = request.get_json()
+    key = secrets.token_urlsafe(16)
+    timestamp = datetime.utcnow().isoformat() + "Z"
+    new_post = Post(msg=data['msg'], key=key, timestamp=timestamp)
+    db.session.add(new_post)
     db.session.commit()
 
-    return jsonify({'message': 'Post created', 'id': post.id}), 201
+    response = {'id': new_post.id, 'key': key, 'timestamp': timestamp}
+    return jsonify(response), 201
+
+@app.route('/post/<int:post_id>', methods=['GET'])
+def read_post(post_id):
+    post = Post.query.get(post_id)
+    if post is None:
+        return "Post not found", 404
+
+    response = {
+        'id': post_id,
+        'timestamp': post.timestamp,
+        'msg': post.msg
+    }
+    return jsonify(response)
+
+@app.route('/post/<int:post_id>/delete/<key>', methods=['DELETE'])
+def delete_post(post_id, key):
+    post = Post.query.get(post_id)
+    if post is None:
+        return "Post not found", 404
+
+    if post.key != key:
+        return "Forbidden: Incorrect key", 403
+
+    db.session.delete(post)
+    db.session.commit()
+    return jsonify({'id': post_id, 'key': key, 'timestamp': post.timestamp})
 
 if __name__ == '__main__':
     app.run(debug=True)
