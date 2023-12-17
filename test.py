@@ -37,7 +37,7 @@ class TestMemberManager(unittest.TestCase):
         response = self.app.get(f'/member/{valid_user.member_id}')
         self.assertEqual(response.status_code, 200)
         data = json.loads(response.data)
-        self.assertEqual(data['member_name'], 'authuser')
+        self.assertEqual(data['member_name'], 'testuser')
 
         # Add more test cases for user authentication here
 
