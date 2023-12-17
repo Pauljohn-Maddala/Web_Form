@@ -51,14 +51,11 @@ def register_member():
 
 @forum_app.route('/member/<int:member_id>', methods=['GET'])
 def get_member_info(member_id):
-    member_info = member_manager.get_member_info(member_id)
-    if not member_info:
-        abort(404, description='Member not found')
-    member = member_info
-    if not member:
-        abort(404, description="Member not found")
-
-    return jsonify(member_id=member.member_id, member_name=member.nickname, full_name=member.full_name)
+    member = member_manager.get_member_info(member_id)
+    if member:
+        return {'member_id': member.member_id, 'member_name': member.nickname, 'full_name': member.full_name}
+    else:
+        return jsonify(message='Member not found'), 404
 
 @forum_app.route('/member/<int:member_id>/edit', methods=['PUT'])
 def update_member_info(member_id):
