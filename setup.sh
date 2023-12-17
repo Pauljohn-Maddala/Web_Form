@@ -13,6 +13,15 @@ nvm install node
 # Use the installed Node.js version
 nvm use node
 
+# Update PATH to use the installed Node.js version
+export PATH="$NVM_DIR/versions/node/$(node -v)/bin:$PATH"
+
+# Display the Node.js version
+echo "Using Node.js version: $(node -v)"
+
+# Install Newman
+npm install -g newman
+
 # Install or upgrade Newman
 npm install -g newman
 
