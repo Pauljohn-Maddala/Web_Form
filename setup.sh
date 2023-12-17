@@ -28,7 +28,7 @@ if ! command -v node &> /dev/null; then
 fi
 
 # Use the installed Node.js version
-nvm use 16
+nvm use 21
 
 # Install Newman
 npm install -g newman
