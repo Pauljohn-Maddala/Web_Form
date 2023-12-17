@@ -55,7 +55,7 @@ def get_member_info(member_id):
     if not member:
         abort(404, description="Member not found")
 
-    return jsonify(member_id=member['member_id'], member_name=member.nickname, full_name=member.full_name)
+    return jsonify(member_id=member.member_id, member_name=member.nickname, full_name=member.full_name)
 
 @forum_app.route('/member/<int:member_id>/edit', methods=['PUT'])
 def update_member_info(member_id):
@@ -70,7 +70,7 @@ def update_member_info(member_id):
     if updated_full_name:
         member.full_name = updated_full_name
 
-    return jsonify(member_id=member['member_id'], member_name=member.nickname, full_name=member.full_name)
+    return jsonify(member_id=member.member_id, member_name=member.nickname, full_name=member.full_name)
 
 @forum_app.route('/discussions', methods=['GET'])
 def filter_posts_by_date():
@@ -219,4 +219,4 @@ if __name__ == '__main__':
 # TODO: Implement specific corrections based on the application's requirements and logic
 
 # Placeholder for potential corrections in server.py
-# TODO: Implement logic for handling duplicate nicknames, proper authorization, and correct request formatting
+# TODO: Review and correct authorization logic, request formatting, and response handling
