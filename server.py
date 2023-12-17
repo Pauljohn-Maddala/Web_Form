@@ -76,5 +76,11 @@ def get_posts_in_range():
 
     return jsonify(filtered_posts)
 
+@app.route('/posts/user/<user_id>', methods=['GET'])
+def get_posts_by_user(user_id):
+    user_posts = {id: post for id, post in posts.items() if post.get('user_id') == user_id}
+    return jsonify(user_posts)
+
+
 if __name__ == '__main__':
     app.run(debug=True)
