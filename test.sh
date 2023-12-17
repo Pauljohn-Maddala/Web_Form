@@ -19,7 +19,7 @@ flask run &
 
 python3 server_v2.py &
 APP_PID=$!
-#python3 test.py
+python3 test.py
 
 # Allow some time for the server to start
 sleep 5
