@@ -4,30 +4,8 @@ from datetime import datetime
 
 app = Flask(__name__)
 
-# Initialize posts as an empty dictionary
-posts = {}
-next_id = 1
-data_file = "posts.json"  # File to store posts
-
-# Function to save posts to the file
-def save_posts():
-    try:
-        with open(data_file, "w") as file:
-            json.dump(posts, file)
-    except Exception as e:
-        print(f"Error saving posts: {str(e)}")
-
-# Function to load posts from the file
-def load_posts():
-    try:
-        with open(data_file, "r") as file:
-            return json.load(file)
-    except (FileNotFoundError, json.JSONDecodeError) as e:
-        print(f"Error loading posts: {str(e)}")
-        return {}
-
-# Load posts from the file on server startup
-posts = load_posts()
+posts = data.load_posts()  # Load posts from the file
+next_id = max(posts.keys(), default=0) + 1
 
 @app.route('/post', methods=['POST'])
 def create_post():
@@ -54,9 +32,10 @@ def create_post():
     next_id += 1
 
     # Save posts to the file after creating a new post
-    save_posts()
+    data.save_posts(posts)
     
     return jsonify(response)
+
 
 
 
@@ -85,7 +64,7 @@ def delete_post(post_id, key):
         return "Forbidden: Incorrect key", 403
 
     del posts[post_id]
-    save_posts()
+    #save_posts()
     return jsonify({'message': 'Post deleted'})
 
 @app.route('/posts/range', methods=['GET'])
