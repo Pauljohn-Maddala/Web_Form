@@ -6,7 +6,8 @@ app = Flask(__name__)
 
 posts = {}
 next_id = 1
-users = {}  # Dictionary to store user information (user_id and user_key)
+users = {}
+next_user_id = 1  # Initialize next_user_id
 
 @app.route('/user', methods=['POST'])
 def create_user():
@@ -36,13 +37,10 @@ def create_post():
     key = secrets.token_urlsafe(16)
     timestamp = datetime.utcnow().isoformat() + "Z"
     posts[next_id] = {'msg': data['msg'], 'key': key, 'timestamp': timestamp, 'user_id': user_id}
-    
+
     response = {'id': next_id, 'key': key, 'timestamp': timestamp, 'user_id': user_id}
     next_id += 1
     return jsonify(response)
-
-
-
 
 @app.route('/post/<int:post_id>', methods=['GET'])
 def read_post(post_id):
@@ -57,7 +55,6 @@ def read_post(post_id):
     }
     return jsonify(response)
 
-
 @app.route('/post/<int:post_id>/delete/<key>', methods=['DELETE'])
 def delete_post(post_id, key):
     post = posts.get(post_id)
@@ -65,7 +62,7 @@ def delete_post(post_id, key):
         return "Post not found", 404
 
     user_id = post.get('user_id')
-    if key != post['key'] and (not user_id or key != users[user_id].user_key):
+    if key != post['key'] and (not user_id or key != users[user_id]['user_key']):
         return "Forbidden: Incorrect key", 403
 
     del posts[post_id]
@@ -89,7 +86,6 @@ def get_posts_in_range():
 def get_posts_by_user(user_id):
     user_posts = {id: post for id, post in posts.items() if post.get('user_id') == user_id}
     return jsonify(user_posts)
-
 
 if __name__ == '__main__':
     app.run(debug=True)
