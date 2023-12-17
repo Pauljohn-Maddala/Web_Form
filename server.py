@@ -7,6 +7,18 @@ app = Flask(__name__)
 posts = {}
 next_id = 1
 
+def save_posts():
+    with open('posts.json', 'w') as file:
+        json.dump(posts, file)
+
+def load_posts():
+    global posts
+    try:
+        with open('posts.json', 'r') as file:
+            posts = json.load(file)
+    except FileNotFoundError:
+        posts = {}
+
 @app.route('/post', methods=['POST'])
 def create_post():
     global next_id
@@ -31,6 +43,7 @@ def create_post():
     
     response = {'id': next_id, 'key': key, 'timestamp': timestamp}
     next_id += 1
+    save_posts()
     return jsonify(response)
 
 
@@ -60,6 +73,7 @@ def delete_post(post_id, key):
         return "Forbidden: Incorrect key", 403
 
     del posts[post_id]
+    save_posts()
     return jsonify({'message': 'Post deleted'})
 
 @app.route('/posts/range', methods=['GET'])
@@ -83,4 +97,5 @@ def get_posts_by_user(user_id):
 
 
 if __name__ == '__main__':
+    load_posts()
     app.run(debug=True)
