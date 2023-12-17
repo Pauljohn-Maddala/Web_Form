@@ -96,7 +96,7 @@ class TestFlaskApi(unittest.TestCase):
         key = create_response.json['key']
 
         # Edit the post
-        edit_data = {'member_id': None, 'member_key': key, 'new_message': 'Edited Test Post'}
+        edit_data = {'post_id': post_id, 'member_key': key, 'new_message': 'Edited Test Post'}
         edit_url = f'/discussion/{post_id}/edit'
         response = self.app.put(edit_url, json=edit_data)
         self.assertEqual(response.status_code, 200)
