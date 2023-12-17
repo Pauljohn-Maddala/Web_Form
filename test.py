@@ -9,8 +9,11 @@ class TestMemberManager(unittest.TestCase):
     
 
     def setUp(self):
-            self.app = forum_app.test_client()  # Create a test client for the Flask app
-            self.member_manager = MemberManager()
+        self.app = forum_app.test_client()  # Create a test client for the Flask app
+        self.member_manager = MemberManager()
+        new_member = member_manager.register_member("new_user", "New User")
+        self.valid_member_id = new_member.member_id
+        self.correct_user_key = new_member.access_key
 
     def test_user_creation(self):
         # Test user creation
