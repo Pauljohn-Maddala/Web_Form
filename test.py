@@ -106,7 +106,7 @@ class TestFlaskApi(unittest.TestCase):
         post_data = {'message': 'Test Post for Filtering by Date'}
         create_response = self.app.post('/discussion', json=post_data)
         post_id = create_response.json['id']
-        response = self.app.get(f'/discussions?start=2023-01-01T00:00:00Z&end=2023-12-31T23:59:59Z')
+        response = self.app.get(f'/discussions?year=2023')
         self.assertEqual(response.status_code, 200)
 
     def test_filter_posts_by_member_endpoint(self):
