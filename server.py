@@ -14,7 +14,14 @@ app.config['SECRET_KEY'] = 'your-secret-key'
 db = SQLAlchemy(app)
 login_manager = LoginManager()
 login_manager.init_app(app)
-limiter = Limiter(app, key_func=get_remote_address, default_limits=["200 per day", "50 per hour"])
+#limiter = Limiter(app, key_func=get_remote_address, default_limits=["200 per day", "50 per hour"])
+
+# Ensure that the Limiter is instantiated correctly
+limiter = Limiter(
+    app,
+    key_func=get_remote_address,
+    default_limits=["200 per day", "50 per hour"]
+)
 
 logging.basicConfig(filename='server.log', level=logging.DEBUG)
 
