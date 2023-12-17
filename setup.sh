@@ -1,14 +1,13 @@
 #!/bin/sh
 
-# Install Python dependencies
-pip3 install Flask pytest
+# Create a virtual environment for Python
+python3 -m venv venv
 
-# Check if Node.js is installed
-if ! command -v node &> /dev/null; then
-    # Install Node.js LTS version directly
-    curl -sL https://deb.nodesource.com/setup_lts.x | sudo -E bash -
-    sudo apt-get install -y nodejs
-fi
+# Activate the virtual environment
+source venv/bin/activate
+
+# Install Python dependencies
+pip install Flask pytest
 
 # Install Newman globally
 npm install -g newman
