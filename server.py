@@ -217,8 +217,4 @@ def search_posts():
 if __name__ == '__main__':
     forum_app.run(debug=True)
 
-# Additional corrections and logic adjustments
-# TODO: Implement specific corrections based on the application's requirements and logic
 
-# Placeholder for potential corrections in server.py
-# TODO: Review and correct authorization logic, request formatting, and response handling
