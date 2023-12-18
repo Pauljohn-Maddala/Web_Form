@@ -6,7 +6,7 @@
 
 
 ## GitHub Repository
-https://github.com/koritalasuryateja/web-form
+https://github.com/Pauljohn-Maddala/Web_Form/tree/main
 
 ## Time Spent on Project
 We estimate that we spent approximately 40 hours on this project.
