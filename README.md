@@ -128,6 +128,7 @@ Once implemented, these tests will assess the effectiveness of IP restrictions a
 
 ---
 
+
 ### Extension 5: Filtering Posts
 
 #### Test Summary:
